@@ -1,0 +1,4 @@
+.idea/
+s3venv/
+.DS_Store
+db.sqlite3
