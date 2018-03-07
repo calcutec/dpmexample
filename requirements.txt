@@ -1,1 +1,5 @@
-django
+Django==2.0.2
+django-nested-admin==3.0.21
+boto3==1.6.3
+django-s3direct==1.0.4
+django-storages==1.6.5
