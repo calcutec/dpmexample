@@ -7,7 +7,6 @@ admin.autodiscover()
 
 
 urlpatterns = [
-    path('grappelli/', include('grappelli.urls')),  # grappelli URLS
     url(r'^admin/', admin.site.urls),
     url(r'^s3direct/', include('s3direct.urls')),
     url(r'^nested_admin/', include('nested_admin.urls')),
