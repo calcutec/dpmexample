@@ -11,15 +11,12 @@ class Release(models.Model):
 
 
 class Disc(models.Model):
-    DISC_NO_CHOICES = (
-        (1, 'One'),
-        (2, 'Two'),
-        (3, 'Three'),
-        (4, 'Four'),
-    )
 
     release = models.ForeignKey('Release', on_delete=models.CASCADE)
-    number = models.IntegerField(choices=DISC_NO_CHOICES,default=1)
+    number = models.IntegerField(default=1)
+
+    class Meta:
+        ordering = ['number',]
 
     def __str__(self):
         return "%s_Disc_%s" % (self.release.cat_no, str(self.number))
@@ -29,8 +26,11 @@ class Track(models.Model):
     disc = models.ForeignKey('Disc', on_delete=models.CASCADE, blank=True, null=True)
     name = models.CharField(max_length=128, blank=True, null=True)
     track = S3DirectField(dest='wavs', blank=True, null=True)
-    track_no = models.IntegerField(blank=True, null=True)
+    track_no = models.IntegerField(default=1)
+
+    class Meta:
+        ordering = ['track_no',]
 
     def __str__(self):
-        return self.name
+        return "%s_%s_%s.wav" % (self.disc.release.cat_no, str(self.disc.number), str(self.track_no))
 

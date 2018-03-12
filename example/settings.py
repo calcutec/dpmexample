@@ -31,6 +31,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    'nested_admin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -39,8 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'storages',
     's3direct',
-    'release.apps.ReleaseConfig',
-    'nested_admin'
+    'release.apps.ReleaseConfig'
 ]
 
 MIDDLEWARE = [

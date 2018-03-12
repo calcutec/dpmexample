@@ -1,27 +1,51 @@
 from django.contrib import admin
 from .models import Release, Track, Disc
 import nested_admin
+from django import forms
+
+
+class TrackForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super(TrackForm, self).__init__(*args, **kwargs)
+        instance = getattr(self, 'instance', None)
+        if instance and instance.pk:
+            self.fields['track_no'].widget.attrs['readonly'] = True
+            self.fields['track_no'].widget.attrs['data-input-type'] = "track"
+
+    class Meta:
+        model = Track
+        fields = ['name', 'track', 'track_no']
 
 
 class TrackInline(nested_admin.NestedTabularInline):
     model = Track
-    min_num = 1
-    extra = 1
+    extra = 0
+    form = TrackForm
     fields = ["track", "track_no", "name"]
+    sortable_field_name = "track_no"
 
-    # def get_extra (self, request, obj=None, **kwargs):
-    #     """Dynamically sets the number of extra forms. 0 if the related object
-    #     already exists or the extra configuration otherwise."""
-    #     if obj:
-    #         # Don't add any extra forms if the related object already exists.
-    #         return 0
-    #     return self.extra
+
+class DiscForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super(DiscForm, self).__init__(*args, **kwargs)
+        instance = getattr(self, 'instance', None)
+        if instance and instance.pk:
+            self.fields['number'].widget.attrs['readonly'] = True
+            self.fields['number'].widget.attrs['data-input-type'] = "disc"
+
+    class Meta:
+        model = Disc
+        fields = ['number']
 
 
 class DiscInline(nested_admin.NestedTabularInline):
     model = Disc
     extra = 0
+    form = DiscForm
     inlines = [TrackInline]
+    sortable_field_name = "number"
 
 
 @admin.register(Release)
