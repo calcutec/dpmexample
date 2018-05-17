@@ -110,11 +110,11 @@ AWS_S3_REGION_NAME = 'us-east-1'
 S3DIRECT_REGION = AWS_S3_REGION_NAME
 
 
-def create_filename(filename, catno):
+def create_filename(filename):
     import uuid
     ext = filename.split('.')[-1]
     filename = '%s.%s' % (uuid.uuid4().hex, ext)
-    return os.path.join(catno, filename)
+    return os.path.join(filename)
 
 
 S3DIRECT_DESTINATIONS = {

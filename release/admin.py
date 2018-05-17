@@ -8,6 +8,7 @@ from . import zipfile as zipstream
 from django.conf import settings
 import sys
 from django.http import StreamingHttpResponse
+import requests
 
 
 def iterable_to_stream(iterable, buffer_size=io.DEFAULT_BUFFER_SIZE):
@@ -48,19 +49,13 @@ def download_releases(self, request, queryset):
                                  aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
     prefix = "DTD023DI"
     bucket = s3_resource.Bucket(name="%s" % settings.AWS_STORAGE_BUCKET_NAME)
-    with open('/tmp/foo2.zip', 'wb') as f:
-        z = zipstream.ZipFile(mode='w')
-        counter = 0
-        for l in bucket.objects.filter(Prefix=prefix):
-            z.write(iterable_to_stream(iterate_key(l)), arcname='foo%s.wav' % str(counter))
-            counter += 1
-
-        # for chunk in z:
-        #     print("CHUNK", len(chunk))
-        #     f.write(chunk)
-        response = StreamingHttpResponse(z, content_type='application/zip')
-        response['Content-Disposition'] = 'attachment; filename={}'.format('files.zip')
-        return response
+    for l in bucket.objects.filter(Prefix=prefix):
+        url = "https://s3.amazonaws.com/dpm-upload/%s" % l.key
+        r = requests.get(url, stream=True)
+        with open('/tmp/%s' % l.key, 'wb') as f:
+            for chunk in r.iter_content(chunk_size=1024):
+                if chunk:
+                    f.write(chunk)
 
 
 class TrackForm(forms.ModelForm):
